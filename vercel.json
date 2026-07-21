@@ -1,0 +1,26 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/generate-youtube-subs.js": {
+      "maxDuration": 60
+    },
+    "api/save-catalog.js": {
+      "maxDuration": 10
+    },
+    "api/upload-cover.js": {
+      "maxDuration": 10
+    },
+    "api/proxy-timedtext.js": {
+      "maxDuration": 15
+    },
+    "api/save-subtitles.js": {
+      "maxDuration": 10
+    }
+
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

@@ -1,0 +1,184 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cabinet+Grotesk:wght@500;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cabinet Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-bh-blue: #0A2E9E;
+  --color-deep-blue: #1736D1;
+  --color-royal-purple: #4A2DCC;
+  --color-accent-yellow: #FFC83D;
+  --color-bh-dark: #020925;
+  --color-bh-card: #05144b;
+}
+
+/* Custom scrollbars and styling elements to match the professional brand identity */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #00B5F7 #004BDC;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #004BDC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00B5F7;
+  border-radius: 99px;
+  border: 2px solid #004BDC;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FFC83D;
+}
+
+html {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body {
+  position: relative;
+  background: radial-gradient(circle, #00B5F7 0%, #004BDC 100%) no-repeat center center fixed;
+  background-size: cover;
+  margin: 0;
+  height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+#root {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url('/assets/images/study_background.jpg') no-repeat center center;
+  background-size: cover;
+  opacity: 0.15;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Vibrant and Premium British House Backdrop Glows */
+.bg-gaming-dark {
+  /* Inherited from body */
+}
+
+.bg-gaming-mesh {
+  /* Inherited from body */
+}
+
+/* Subtle British pattern textures overlayed in background CSS */
+.bg-union-jack-grid {
+  background-size: 80px 80px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+}
+
+/* Gaming glow elements - aligned with Instagram style, not excessive neon */
+.neon-glow-primary {
+  box-shadow: 0 0 25px rgba(10, 46, 158, 0.35);
+}
+
+.neon-glow-purple {
+  box-shadow: 0 0 25px rgba(74, 45, 204, 0.35);
+}
+
+.neon-glow-yellow {
+  box-shadow: 0 0 30px rgba(255, 200, 61, 0.45);
+}
+
+.text-glow-yellow {
+  text-shadow: 0 0 15px rgba(255, 200, 61, 0.35);
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-2deg);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.03);
+  }
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-reverse 6s ease-in-out infinite;
+}
+
+.animate-float-fast {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 5s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0% {
+    left: -110%;
+  }
+  40%, 100% {
+    left: 110%;
+  }
+}
+
+.animate-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.animate-shine::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -110%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-25deg);
+  animation: sweep 6s infinite ease-in-out;
+  pointer-events: none;
+}
+

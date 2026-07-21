@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "start": 0,
+    "end": 7,
+    "en": "I remember the day when he disappeared into the clouds.",
+    "es": "Recuerdo el día en que desapareció en las nubes."
+  },
+  {
+    "id": 2,
+    "start": 7,
+    "end": 14,
+    "en": "I vowed to search for him, no matter what obstacles lay ahead.",
+    "es": "Prometí buscarlo, sin importar qué obstáculos tuviera por delante."
+  },
+  {
+    "id": 3,
+    "start": 14,
+    "end": 22,
+    "en": "This frozen mountain is the closest I've ever gotten to his lair.",
+    "es": "Esta montaña congelada es lo más cerca que he estado de su guarida."
+  },
+  {
+    "id": 4,
+    "start": 22,
+    "end": 30,
+    "en": "Truth be told, I am exhausted and my strength is fading away.",
+    "es": "A decir verdad, estoy exhausta y mis fuerzas se están desvaneciendo."
+  },
+  {
+    "id": 5,
+    "start": 30,
+    "end": 38,
+    "en": "But a true friendship is a milestone that never fades.",
+    "es": "Pero una verdadera amistad es un hito que nunca se desvanece."
+  },
+  {
+    "id": 6,
+    "start": 38,
+    "end": 45,
+    "en": "I will find him, and we will fly together once again.",
+    "es": "Lo encontraré, y volaremos juntos una vez más."
+  }
+]

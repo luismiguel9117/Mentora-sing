@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "start": 1,
+    "end": 6,
+    "en": "We are going to make them believe we came in for a robbery.",
+    "es": "Vamos a hacerles creer que entramos a robar."
+  },
+  {
+    "id": 2,
+    "start": 6,
+    "end": 12,
+    "en": "It is fundamental that the police have no idea of what we are doing.",
+    "es": "Es fundamental que la policía no tenga idea de lo que estamos haciendo."
+  },
+  {
+    "id": 3,
+    "start": 12,
+    "end": 18,
+    "en": "And that is our milestone for today.",
+    "es": "Y ese es nuestro hito para el día de hoy."
+  }
+]

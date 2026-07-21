@@ -1,0 +1,207 @@
+@import "tailwindcss";
+
+@source "./**/*.{js,ts,jsx,tsx}";
+@source "../index.html";
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+}
+
+@theme {
+  --color-surface-variant: #e4e1ee;
+  --color-tertiary-container: #a44100;
+  --color-on-primary-container: #dad7ff;
+  --color-primary: #3525cd;
+  --color-primary-fixed: #e2dfff;
+  --color-primary-container: #4f46e5;
+  --color-surface-container-low: #f5f2ff;
+  --color-secondary-fixed: #eaddff;
+  --color-primary-fixed-dim: #c3c0ff;
+  --color-background: #fcf8ff;
+  --color-secondary-fixed-dim: #d2bbff;
+  --color-on-tertiary: #ffffff;
+  --color-on-secondary-container: #fffbff;
+  --color-surface-container-lowest: #ffffff;
+  --color-on-primary-fixed: #0f0069;
+  --color-surface-container-highest: #e4e1ee;
+  --color-on-secondary-fixed-variant: #5a00c6;
+  --color-surface-bright: #fcf8ff;
+  --color-secondary: #712ae2;
+  --color-on-surface-variant: #464555;
+  --color-surface-container-high: #eae6f4;
+  --color-on-tertiary-fixed: #351000;
+  --color-surface: #fcf8ff;
+  --color-surface-container: #f0ecf9;
+  --color-error: #ba1a1a;
+  --color-surface-dim: #dcd8e5;
+  --color-error-container: #ffdad6;
+  --color-outline-variant: #c7c4d8;
+  --color-on-surface: #1b1b24;
+  --color-inverse-surface: #302f39;
+  --color-on-tertiary-fixed-variant: #7b2f00;
+  --color-on-background: #1b1b24;
+  --color-secondary-container: #8a4cfc;
+  --color-tertiary-fixed-dim: #ffb695;
+  --color-outline: #777587;
+  --color-on-secondary-fixed: #25005a;
+  --color-on-error-container: #93000a;
+  --color-tertiary: #7e3000;
+  --color-on-primary-fixed-variant: #3323cc;
+  --color-tertiary-fixed: #ffdbcc;
+  --color-on-tertiary-container: #ffd2be;
+  --color-on-primary: #ffffff;
+  --color-on-secondary: #ffffff;
+  --color-surface-tint: #4d44e3;
+  --color-on-error: #ffffff;
+  --color-inverse-primary: #c3c0ff;
+  --color-inverse-on-surface: #f3effc;
+
+  --spacing-stack_md: 24px;
+  --spacing-stack_lg: 40px;
+  --spacing-margin_tablet: 48px;
+  --spacing-stack_sm: 12px;
+  --spacing-gutter: 16px;
+  --spacing-margin_mobile: 24px;
+  --spacing-base_unit: 8px;
+
+  --radius-DEFAULT: 1rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
+  --radius-full: 9999px;
+
+  --font-headline-lg: "Plus Jakarta Sans";
+  --font-label-md: "Be Vietnam Pro";
+  --font-label-sm: "Be Vietnam Pro";
+  --font-display-lg: "Plus Jakarta Sans";
+  --font-body-lg: "Be Vietnam Pro";
+  --font-headline-md: "Plus Jakarta Sans";
+  --font-body-md: "Be Vietnam Pro";
+
+  --text-headline-lg: 32px;
+  --text-headline-lg--line-height: 40px;
+  --text-headline-lg--letter-spacing: -0.01em;
+  --text-headline-lg--font-weight: 700;
+
+  --text-label-md: 14px;
+  --text-label-md--line-height: 20px;
+  --text-label-md--letter-spacing: 0.01em;
+  --text-label-md--font-weight: 600;
+
+  --text-label-sm: 12px;
+  --text-label-sm--line-height: 16px;
+  --text-label-sm--font-weight: 500;
+
+  --text-display-lg: 40px;
+  --text-display-lg--line-height: 48px;
+  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--font-weight: 700;
+
+  --text-body-lg: 18px;
+  --text-body-lg--line-height: 28px;
+  --text-body-lg--font-weight: 400;
+
+  --text-headline-md: 24px;
+  --text-headline-md--line-height: 32px;
+  --text-headline-md--font-weight: 600;
+
+  --text-body-md: 16px;
+  --text-body-md--line-height: 24px;
+  --text-body-md--font-weight: 400;
+}
+
+@layer base {
+  :root {
+    --color-primary: #3525cd;
+    --color-primary-container: #4f46e5;
+    --color-on-primary-container: #dad7ff;
+    --color-secondary: #712ae2;
+    --color-secondary-container: #8a4cfc;
+    --color-tertiary: #7e3000;
+    --color-tertiary-fixed: #ffdbcc;
+    --color-on-tertiary-fixed: #351000;
+    --color-background: #fcf8ff;
+    --color-surface: #fcf8ff;
+    --color-surface-container-lowest: #ffffff;
+    --color-surface-container-low: #f5f2ff;
+    --color-surface-container: #f0ecf9;
+    --color-surface-container-high: #eae6f4;
+    --color-surface-container-highest: #e4e1ee;
+    --color-on-surface: #1b1b24;
+    --color-on-surface-variant: #464555;
+    --color-outline-variant: #c7c4d8;
+  }
+
+  body {
+    background-color: #fcf8ff;
+    color: #1b1b24;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-headline {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  user-select: none;
+}
+
+.lyric-gradient {
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+}
+
+.pitch-line {
+  transition: height 0.15s ease-out;
+}
+
+.active-lyric {
+  color: #4f46e5;
+  transform: scale(1.05);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.achievement-badge {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.achievement-badge:hover {
+  transform: translateY(-4px) rotate(5deg);
+}
+
+/* Custom smooth scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #e4e1ee;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #c7c4d8;
+}
+
+/* Hide scrollbars for clean UI */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

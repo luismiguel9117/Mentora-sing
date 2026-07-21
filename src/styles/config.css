@@ -1,0 +1,377 @@
+/* src/styles/config.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap');
+
+.config-container {
+  min-height: 100vh;
+  background-color: #0b0f19; /* Sleek Dark Theme general background */
+  font-family: 'Inter', sans-serif;
+  color: #f1f5f9;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.config-header {
+  max-width: 1200px;
+  margin: 0 auto 2rem auto;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.back-to-app-btn {
+  background: none;
+  border: 1.5px solid #374151;
+  color: #94a3b8;
+  padding: 0.5rem 1.2rem;
+  border-radius: 9999px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-to-app-btn:hover {
+  border-color: #6265ff;
+  color: #ffffff;
+  background-color: rgba(98, 101, 255, 0.1);
+}
+
+.config-card {
+  max-width: 450px;
+  margin: 4rem auto 0 auto;
+  background-color: #1f2937; /* Slate card background */
+  border: 2px solid #374151;
+  border-radius: 24px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+}
+
+.config-login-form h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.config-subtitle {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.input-group {
+  margin-bottom: 1.5rem;
+}
+
+.input-password {
+  width: 100%;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #374151;
+  border-radius: 12px;
+  background-color: #111827;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.input-password:focus {
+  outline: none;
+  border-color: #6265ff;
+}
+
+/* 3D Button style matching Mentora specifications */
+.btn-3d {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  position: relative;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  border-radius: 12px;
+  background-color: #6265ff;
+  color: #ffffff;
+  font-size: 0.95rem;
+  border-bottom: 4px solid #201c4e;
+}
+
+.login-btn:active {
+  transform: translateY(4px);
+  border-bottom: 0px solid transparent;
+}
+
+/* Admin Grid Layout */
+.admin-workspace-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .admin-workspace-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Video Management View */
+.video-management-card {
+  background-color: #1f2937;
+  border: 2px solid #374151;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.video-management-card h2,
+.add-video-card h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.video-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.video-list-item {
+  background-color: #111827;
+  border: 1.5px solid #374151;
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.video-list-item:hover {
+  border-color: #6265ff;
+}
+
+.video-item-emoji {
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-item-details {
+  flex: 1;
+  overflow: hidden;
+}
+
+.video-item-details h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 0.25rem 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.video-item-submeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.video-item-cat {
+  font-size: 0.7rem;
+  color: #45bcac;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.video-item-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.video-item-badge.youtube {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.video-item-badge.local {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.video-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.edit-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: #6265ff;
+  color: #ffffff;
+  font-size: 0.8rem;
+  border-bottom: 3px solid #201c4e;
+}
+
+.edit-btn:active {
+  transform: translateY(3px);
+  border-bottom: 0px solid transparent;
+}
+
+.remove-btn {
+  background: none;
+  border: 1.5px solid #ef4444;
+  color: #fca5a5;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background-color: #7f1d1d;
+  color: #ffffff;
+}
+
+/* Add Video Card Form */
+.add-video-card {
+  background-color: #1f2937;
+  border: 2px solid #374151;
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+.add-video-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem 1rem;
+  border: 2px solid #374151;
+  border-radius: 10px;
+  background-color: #111827;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #6265ff;
+}
+
+.add-submit-btn {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 12px;
+  background-color: #45bcac;
+  color: #ffffff;
+  font-size: 0.85rem;
+  border-bottom: 4px solid #205c54;
+  margin-top: 0.5rem;
+}
+
+.add-submit-btn:active {
+  transform: translateY(4px);
+  border-bottom: 0px solid transparent;
+}
+
+.empty-catalog-text {
+  text-align: center;
+  color: #64748b;
+  font-style: italic;
+  padding: 2rem 0;
+  font-size: 0.9rem;
+}
+
+/* Loading & Spinner states */
+.config-loading {
+  min-height: 100vh;
+  background-color: #0b0f19;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(98, 101, 255, 0.1);
+  border-top-color: #6265ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

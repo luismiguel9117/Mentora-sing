@@ -1,0 +1,79 @@
+[
+  {
+    "id": 1,
+    "start": 1.0,
+    "end": 5.0,
+    "en": "This is a day I've been looking forward to for two and a half years.",
+    "es": "Este es un día que he estado esperando con ansias durante dos años y medio."
+  },
+  {
+    "id": 2,
+    "start": 6.0,
+    "end": 12.0,
+    "en": "Every once in a while, a revolutionary product comes along that changes everything.",
+    "es": "De vez en cuando, aparece un producto revolucionario que lo cambia todo."
+  },
+  {
+    "id": 3,
+    "start": 13.0,
+    "end": 19.5,
+    "en": "Well, first, one has been very fortunate to get to work on some of these in their career.",
+    "es": "Bueno, primero, uno ha tenido la gran suerte de poder trabajar en algunos de estos en su carrera."
+  },
+  {
+    "id": 4,
+    "start": 20.0,
+    "end": 26.5,
+    "en": "In 1984, we introduced the Macintosh. It changed the whole computer industry.",
+    "es": "En 1984, presentamos el Macintosh. Cambió toda la industria de la computación."
+  },
+  {
+    "id": 5,
+    "start": 27.0,
+    "end": 34.0,
+    "en": "In 2001, we introduced the first iPod. It changed the entire music industry.",
+    "es": "En 2001, presentamos el primer iPod. Cambió a toda la industria de la música."
+  },
+  {
+    "id": 6,
+    "start": 35.0,
+    "end": 40.5,
+    "en": "Well, today, we're introducing three revolutionary products of this class.",
+    "es": "Bueno, hoy presentaremos tres productos revolucionarios de esta clase."
+  },
+  {
+    "id": 7,
+    "start": 41.0,
+    "end": 46.0,
+    "en": "The first one is a wide-screen iPod with touch controls.",
+    "es": "El primero es un iPod de pantalla ancha con controles táctiles."
+  },
+  {
+    "id": 8,
+    "start": 46.5,
+    "end": 50.5,
+    "en": "The second is a revolutionary mobile phone.",
+    "es": "El segundo es un teléfono móvil revolucionario."
+  },
+  {
+    "id": 9,
+    "start": 51.0,
+    "end": 56.5,
+    "en": "And the third is a breakthrough Internet communications device.",
+    "es": "Y el tercero es un dispositivo de comunicaciones por Internet sin precedentes."
+  },
+  {
+    "id": 10,
+    "start": 57.0,
+    "end": 64.0,
+    "en": "An iPod, a phone, and an Internet communicator... are you getting it?",
+    "es": "Un iPod, un teléfono y un comunicador de Internet... ¿lo captan?"
+  },
+  {
+    "id": 11,
+    "start": 64.5,
+    "end": 71.0,
+    "en": "These are not three separate devices. This is one device, and we are calling it iPhone.",
+    "es": "Estos no son tres dispositivos separados. Es un solo dispositivo, y lo estamos llamando iPhone."
+  }
+]

@@ -1,0 +1,6 @@
+{
+  "name": "British House - English Level Assessment",
+  "description": "An interactive, modern, and premium English level assessment for British House, allowing prospective students to test their English proficiency in under 5 minutes and receive a personalized program recommendation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

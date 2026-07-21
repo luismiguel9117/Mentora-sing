@@ -1,0 +1,10 @@
+{
+  "projectProfile": "quiz",
+  "agentsRoot": "g:/Escritorio/WEB/.agents",
+  "systemPromptOverride": "g:/Escritorio/WEB/.agents/prompts/system/master.md",
+  "rules": [
+    "g:/Escritorio/WEB/.agents/rules/engineering/clean-code.md",
+    "g:/Escritorio/WEB/.agents/rules/design/luxury-minimalism.md",
+    "g:/Escritorio/WEB/.agents/rules/motion/cinematic-motion.md"
+  ]
+}

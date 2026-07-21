@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "start": 1,
+    "end": 4,
+    "en": "Welcome to your mind.",
+    "es": "Bienvenido a tu mente."
+  },
+  {
+    "id": 2,
+    "start": 4,
+    "end": 8,
+    "en": "Things are changing. We need to make room for new emotions now.",
+    "es": "Las cosas están cambiando. Necesitamos hacer espacio para nuevas emociones ahora."
+  },
+  {
+    "id": 3,
+    "start": 8,
+    "end": 14,
+    "en": "I am Anxiety. Where should I put my stuff?",
+    "es": "Soy Ansiedad. ¿Dónde debería poner mis cosas?"
+  },
+  {
+    "id": 4,
+    "start": 14,
+    "end": 20,
+    "en": "We are going to have a breakthrough in this brain.",
+    "es": "Vamos a tener un avance crucial en este cerebro."
+  }
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "start": 1.0,
+    "end": 4.5,
+    "en": "Hmm. Difficult. Very difficult.",
+    "es": "Mmm. Difícil. Muy difícil."
+  },
+  {
+    "id": 2,
+    "start": 5.0,
+    "end": 8.0,
+    "en": "Plenty of courage, I see. Not a bad mind, either.",
+    "es": "Mucho valor, veo. Tampoco una mala mente."
+  },
+  {
+    "id": 3,
+    "start": 8.5,
+    "end": 11.5,
+    "en": "There's talent, oh yes. And a thirst to prove yourself.",
+    "es": "Hay talento, oh sí. Y una sed de probarte a ti mismo."
+  },
+  {
+    "id": 4,
+    "start": 12.0,
+    "end": 15.0,
+    "en": "But where to put you?",
+    "es": "Pero ¿dónde ponerte?"
+  },
+  {
+    "id": 5,
+    "start": 15.5,
+    "end": 18.5,
+    "en": "Not Slytherin, not Slytherin!",
+    "es": "¡Slytherin no, Slytherin no!"
+  },
+  {
+    "id": 6,
+    "start": 19.0,
+    "end": 22.0,
+    "en": "Not Slytherin, eh? Are you sure?",
+    "es": "¿Slytherin no, eh? ¿Estás seguro?"
+  },
+  {
+    "id": 7,
+    "start": 22.5,
+    "end": 26.5,
+    "en": "You could be great, you know. It's all here, in your head.",
+    "es": "Podrías ser grande, ¿sabes? Todo está aquí, en tu cabeza."
+  },
+  {
+    "id": 8,
+    "start": 27.0,
+    "end": 32.5,
+    "en": "And Slytherin will help you on the way to greatness, no doubt about that.",
+    "es": "Y Slytherin te ayudará en el camino hacia la grandeza, no hay duda de eso."
+  },
+  {
+    "id": 9,
+    "start": 33.0,
+    "end": 37.0,
+    "en": "No? Well, if you're sure...",
+    "es": "¿No? Bueno, si estás seguro..."
+  },
+  {
+    "id": 10,
+    "start": 37.5,
+    "end": 42.0,
+    "en": "Better be... GRYFFINDOR!",
+    "es": "Mejor que sea... ¡GRYFFINDOR!"
+  }
+]

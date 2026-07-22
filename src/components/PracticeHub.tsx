@@ -22,6 +22,9 @@ export const PracticeHub: React.FC<PracticeHubProps> = ({
   // Listening Fill-in-the-blank game state
   const [blankAnswer, setBlankAnswer] = useState('');
   const [isAnswerCorrect, setIsAnswerCorrect] = useState<boolean | null>(null);
+  const [practiceLineIdx, setPracticeLineIdx] = useState(0);
+  const [practiceStreak, setPracticeStreak] = useState(0);
+  const [isAutoTransitioning, setIsAutoTransitioning] = useState(false);
 
   // Pronunciation practice state
   const [isRecording, setIsRecording] = useState(false);
@@ -31,14 +34,178 @@ export const PracticeHub: React.FC<PracticeHubProps> = ({
   const [cardIndex, setCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
 
-  const activeLyric = selectedSong.lyrics[3] || selectedSong.lyrics[0]; // "Built a home and watched it burn"
-  const vocabularyList = selectedSong.lyrics.flatMap((l) => l.words || []);
+  // Dynamic lyric line for voice practice
+  const activeLyric = selectedSong.lyrics && selectedSong.lyrics.length > 0
+    ? (selectedSong.lyrics[practiceLineIdx % selectedSong.lyrics.length] || selectedSong.lyrics[0])
+    : { id: 1, text: "Built a home and watched it burn", spanishTranslation: "Construimos un hogar y lo vimos arder" };
+
+  const vocabularyList = selectedSong.lyrics ? selectedSong.lyrics.flatMap((l) => l.words || []) : [];
+
+  // 1. Fetch subtitles dynamically if they are empty
+  useEffect(() => {
+    async function loadSubs() {
+      if (!selectedSong.lyrics || selectedSong.lyrics.length === 0) {
+        try {
+          const youtubeVideoId = selectedSong.id;
+          const res = await fetch('/api/generate-youtube-subs', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ videoId: youtubeVideoId })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && data.subtitles && data.subtitles.length > 0) {
+              const mappedSubs = data.subtitles.map((cue: any) => ({
+                id: cue.id,
+                timeSeconds: cue.start,
+                text: cue.en,
+                spanishTranslation: cue.es
+              }));
+              setSelectedSong(prev => ({ ...prev, lyrics: mappedSubs }));
+            }
+          }
+        } catch (e) {
+          console.warn("Failed to load subtitles dynamically in PracticeHub:", e);
+        }
+      }
+    }
+    loadSubs();
+  }, [selectedSong.id]);
+
+  // Synthesize game sound effects using Web Audio API
+  const playTone = (type: 'success' | 'fail') => {
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      
+      if (type === 'success') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'sine';
+        
+        const now = ctx.currentTime;
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+        
+        osc.frequency.setValueAtTime(523.25, now); // C5
+        osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+        osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+        
+        osc.start(now);
+        osc.stop(now + 0.35);
+      } else {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = 'triangle';
+        
+        const now = ctx.currentTime;
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+        
+        osc.frequency.setValueAtTime(220, now); // A3
+        osc.frequency.exponentialRampToValueAtTime(130, now + 0.35);
+        
+        osc.start(now);
+        osc.stop(now + 0.45);
+      }
+    } catch (err) {
+      console.warn("AudioContext synthesis error:", err);
+    }
+  };
+
+  const getQuestionDetails = () => {
+    const emptyDetails = {
+      displayText: 'Built a home and watched it ____',
+      cleanHiddenWord: 'burn',
+      fullText: 'Built a home and watched it burn',
+      translation: 'Construimos un hogar y lo vimos arder'
+    };
+
+    if (!selectedSong.lyrics || selectedSong.lyrics.length === 0) {
+      return emptyDetails;
+    }
+
+    const line = selectedSong.lyrics[practiceLineIdx % selectedSong.lyrics.length] || selectedSong.lyrics[0];
+    const rawWords = line.text.split(/(\s+)/);
+    
+    // Choose longest word of the line as gap target
+    let targetIndex = -1;
+    let maxLen = 0;
+    
+    rawWords.forEach((w, idx) => {
+      const clean = w.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+      if (clean.length > 3 && clean.length > maxLen) {
+        maxLen = clean.length;
+        targetIndex = idx;
+      }
+    });
+    
+    if (targetIndex === -1) {
+      for (let i = rawWords.length - 1; i >= 0; i--) {
+        const clean = rawWords[i].replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
+        if (clean.length > 0) {
+          targetIndex = i;
+          break;
+        }
+      }
+    }
+    
+    if (targetIndex === -1) {
+      return emptyDetails;
+    }
+
+    const hiddenWord = rawWords[targetIndex];
+    const cleanHiddenWord = hiddenWord.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim().toLowerCase();
+    
+    const displayText = rawWords.map((w, idx) => {
+      if (idx === targetIndex) return '____';
+      return w;
+    }).join('');
+    
+    return {
+      displayText,
+      cleanHiddenWord,
+      fullText: line.text,
+      translation: line.spanishTranslation || ''
+    };
+  };
+
+  const q = getQuestionDetails();
 
   const handleCheckListening = () => {
-    if (blankAnswer.trim().toLowerCase() === 'burn') {
+    if (isAutoTransitioning) return;
+    
+    const isCorrect = blankAnswer.trim().toLowerCase() === q.cleanHiddenWord;
+    
+    if (isCorrect) {
       setIsAnswerCorrect(true);
+      setPracticeStreak(prev => prev + 1);
+      playTone('success');
+      
+      setIsAutoTransitioning(true);
+      setTimeout(() => {
+        setBlankAnswer('');
+        setIsAnswerCorrect(null);
+        setPracticeLineIdx(prev => prev + 1);
+        setIsAutoTransitioning(false);
+      }, 1800);
     } else {
       setIsAnswerCorrect(false);
+      setPracticeStreak(0);
+      playTone('fail');
+      
+      setIsAutoTransitioning(true);
+      setTimeout(() => {
+        setBlankAnswer('');
+        setIsAnswerCorrect(null);
+        setPracticeLineIdx(prev => prev + 1);
+        setIsAutoTransitioning(false);
+      }, 2800);
     }
   };
 
@@ -109,13 +276,20 @@ export const PracticeHub: React.FC<PracticeHubProps> = ({
       {/* Tab Content 1: Listening Fill-in-the-blank */}
       {activeTab === 'listening' && (
         <div className="bg-white p-6 md:p-8 rounded-3xl border border-outline-variant/30 shadow-xs space-y-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-[#E0F2FE] text-[#0EA5E9] flex items-center justify-center">
-              <span className="material-symbols-outlined">hearing</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-[#E0F2FE] text-[#0EA5E9] flex items-center justify-center">
+                <span className="material-symbols-outlined">hearing</span>
+              </div>
+              <div>
+                <h3 className="font-headline font-bold text-lg text-[#1b1b24]">Listening Gap Fill</h3>
+                <p className="text-xs text-[#464555]">Listen to the line and fill in the missing word.</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-headline font-bold text-lg text-[#1b1b24]">Listening Gap Fill</h3>
-              <p className="text-xs text-[#464555]">Listen to the line and fill in the missing word.</p>
+            {/* Streak Counter */}
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-[#fffbeb] border border-[#fef3c7] rounded-full text-amber-700 font-bold text-xs shadow-xs animate-bounce">
+              <span>🔥</span>
+              <span>Racha: {practiceStreak}</span>
             </div>
           </div>
 
@@ -124,48 +298,72 @@ export const PracticeHub: React.FC<PracticeHubProps> = ({
               onClick={() => {
                 const synth = window.speechSynthesis;
                 if (synth) {
-                  const utterance = new SpeechSynthesisUtterance('Built a home and watched it burn');
-                  utterance.rate = 0.9;
+                  synth.cancel(); // stop any active speech
+                  const utterance = new SpeechSynthesisUtterance(q.fullText);
+                  utterance.lang = 'en-US';
+                  utterance.rate = 0.85;
                   synth.speak(utterance);
                 }
               }}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#3525cd] text-white rounded-full font-bold text-xs shadow-md hover:bg-[#4f46e5] active:scale-95 transition-all"
             >
               <span className="material-symbols-outlined text-base">volume_up</span>
-              Play Audio Line
+              Escuchar Frase
             </button>
 
-            <p className="font-headline text-xl md:text-2xl font-bold text-[#1b1b24] pt-2">
-              "Built a home and watched it <span className="underline decoration-2 text-[#3525cd] font-extrabold">____</span>"
+            <p className="font-headline text-xl md:text-2xl font-bold text-[#1b1b24] pt-2 leading-relaxed">
+              "{q.displayText}"
             </p>
+            {q.translation && (
+              <p className="text-xs text-indigo-500 font-semibold italic mt-1">
+                ({q.translation})
+              </p>
+            )}
 
-            <div className="max-w-xs mx-auto flex gap-2">
+            <div className="max-w-xs mx-auto flex gap-2 pt-2">
               <input
                 type="text"
                 value={blankAnswer}
                 onChange={(e) => {
+                  if (isAutoTransitioning) return;
                   setBlankAnswer(e.target.value);
                   setIsAnswerCorrect(null);
                 }}
-                placeholder="Type the word..."
-                className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant/40 text-center font-bold text-sm focus:ring-2 focus:ring-[#3525cd]/20"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleCheckListening();
+                  }
+                }}
+                disabled={isAutoTransitioning}
+                maxLength={q.cleanHiddenWord.length}
+                placeholder="Escribe la palabra..."
+                className={`flex-1 px-4 py-2.5 rounded-xl border text-center font-bold text-sm focus:ring-2 focus:ring-[#3525cd]/20 transition-all ${
+                  isAnswerCorrect === true ? 'border-emerald-500 bg-emerald-50 text-emerald-900' :
+                  isAnswerCorrect === false ? 'border-red-500 bg-red-50 text-red-900' :
+                  'border-outline-variant/40 bg-white'
+                }`}
+                autoComplete="off"
+                autoCorrect="off"
+                autoCapitalize="off"
+                spellCheck="false"
               />
               <button
                 onClick={handleCheckListening}
-                className="bg-[#3525cd] text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-[#4f46e5] transition-all"
+                disabled={isAutoTransitioning || !blankAnswer.trim()}
+                className="bg-[#3525cd] text-white px-5 py-2.5 rounded-xl font-bold text-xs hover:bg-[#4f46e5] transition-all disabled:opacity-50"
               >
-                Check
+                Comprobar
               </button>
             </div>
 
             {isAnswerCorrect === true && (
               <div className="p-3 bg-[#F0FDF4] text-[#22C55E] rounded-xl text-xs font-bold animate-fadeIn">
-                🎉 Perfect! "burn" is correct! +15 XP
+                🎉 ¡Excelente! "{q.cleanHiddenWord}" es correcto. +15 XP
               </div>
             )}
             {isAnswerCorrect === false && (
               <div className="p-3 bg-[#FEF2F2] text-[#EF4444] rounded-xl text-xs font-bold animate-fadeIn">
-                ❌ Try again! Hint: rhymes with "turn".
+                ❌ ¡Incorrecto! La palabra correcta era "{q.cleanHiddenWord}".
               </div>
             )}
           </div>

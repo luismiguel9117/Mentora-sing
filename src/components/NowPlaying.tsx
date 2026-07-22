@@ -51,6 +51,7 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
   const [currentSecond, setCurrentSecond] = useState(0);
   const [pitchScore, setPitchScore] = useState(98);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [lyricOffset, setLyricOffset] = useState(0);
   
   // Game Playback Logic
   const [score, setScore] = useState(0);
@@ -77,7 +78,7 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
   // 1. Resolve actual YouTube ID
   const youtubeVideoId = YOUTUBE_IDS[song.id] || song.id;
 
-  // 2. Tokenize lyrics with interactive input gaps
+  // 2. Tokenize lyrics with interactive input gaps (max 2 gaps per line)
   const initializeGame = (lyricsData: any[]) => {
     if (!lyricsData || lyricsData.length === 0) return;
 
@@ -85,12 +86,29 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
     const parsed: GameLyricLine[] = lyricsData.map((line, lineIdx) => {
       const words = line.text.split(/(\s+)/);
       
+      // Identify candidate words in this line (exclude short words and punctuation)
+      const candidates: number[] = [];
+      words.forEach((word: string, wordIdx: number) => {
+        const clean = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim().toLowerCase();
+        if (clean.length > 2) {
+          candidates.push(wordIdx);
+        }
+      });
+
+      // Target at most 2 gaps per line (1 for very short lines, 2 for longer lines)
+      const allowedGapsCount = candidates.length <= 3 ? 1 : 2;
+      const gapIndices: number[] = [];
+      for (let i = 0; i < allowedGapsCount && i < candidates.length; i++) {
+        // Deterministic selection based on line index to distribute gaps
+        const selIndex = (lineIdx + i * 2) % candidates.length;
+        gapIndices.push(candidates[selIndex]);
+      }
+      
       const tokens: GameToken[] = words.map((word: string, wordIdx: number) => {
         const clean = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim().toLowerCase();
         const isActualWord = clean.length > 0;
         
-        // Dynamic gap placement rule: 25% of words are gaps
-        const isGap = isActualWord && clean.length > 2 && ((lineIdx * 3 + wordIdx) % 4 === 1);
+        const isGap = isActualWord && gapIndices.includes(wordIdx);
         
         if (isGap) gapCount++;
 
@@ -123,43 +141,43 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
     setGameCompleted(false);
     setIsGameOver(false);
     setCurrentSecond(0);
+    setLyricOffset(0); // reset sync offset per song
   };
 
-  // Fetch subtitles if not present, or load song's custom lyrics
+  // Fetch subtitles dynamically first for exact sync, fallback to presets
   const loadSubtitles = async () => {
+    setIsFetchingSubs(true);
+    try {
+      const res = await fetch('/api/generate-youtube-subs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videoId: youtubeVideoId })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.subtitles && data.subtitles.length > 0) {
+          const mappedSubs = data.subtitles.map((cue: any) => ({
+            id: cue.id,
+            timeSeconds: cue.start,
+            text: cue.en,
+            spanishTranslation: cue.es
+          }));
+          initializeGame(mappedSubs);
+          setIsFetchingSubs(false);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn("Failed to fetch subtitles dynamically, trying presets...", err);
+    }
+
+    // Fallback to preset lyrics if available
     if (song.lyrics && song.lyrics.length > 0 && song.lyrics[0].text.length > 0) {
       initializeGame(song.lyrics);
     } else {
-      setIsFetchingSubs(true);
-      try {
-        const res = await fetch('/api/generate-youtube-subs', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ videoId: youtubeVideoId })
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success && data.subtitles && data.subtitles.length > 0) {
-            // Map keys
-            const mappedSubs = data.subtitles.map((cue: any) => ({
-              id: cue.id,
-              timeSeconds: cue.start,
-              text: cue.en,
-              spanishTranslation: cue.es
-            }));
-            initializeGame(mappedSubs);
-          } else {
-            initializeFallbackGame();
-          }
-        } else {
-          initializeFallbackGame();
-        }
-      } catch {
-        initializeFallbackGame();
-      } finally {
-        setIsFetchingSubs(false);
-      }
+      initializeFallbackGame();
     }
+    setIsFetchingSubs(false);
   };
 
   const initializeFallbackGame = () => {
@@ -213,7 +231,7 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
           showinfo: 0,
           modestbranding: 1,
           disablejsapi: 1,
-          cc_load_policy: 3,
+          cc_load_policy: 0,
           iv_load_policy: 3
         },
         events: {
@@ -221,6 +239,16 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
             const dur = event.target.getDuration();
             if (dur > 0) setVideoDuration(dur);
             setIsPlaying(true);
+            
+            // Explicitly deactivate/unload native YouTube captions
+            try {
+              if (event.target.unloadModule) {
+                event.target.unloadModule('captions');
+                event.target.unloadModule('cc');
+              }
+            } catch (err) {
+              console.warn("Could not unload YouTube captions:", err);
+            }
           },
           'onStateChange': (event: any) => {
             if (event.data === (window as any).YT.PlayerState.PLAYING) {
@@ -407,11 +435,12 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
     }
   };
 
-  // Determine active lyric index
+  // Determine active lyric index with adjustable sync offset
+  const syncedTime = currentSecond + lyricOffset;
   let activeLyricIndex = gameSubtitles.findIndex((l, index) => {
     const nextLine = gameSubtitles[index + 1];
     if (!nextLine) return true;
-    return currentSecond >= l.timeSeconds && currentSecond < nextLine.timeSeconds;
+    return syncedTime >= l.timeSeconds && syncedTime < nextLine.timeSeconds;
   });
 
   if (activeLyricIndex === -1 && gameSubtitles.length > 0) {
@@ -635,6 +664,7 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
                                 onChange={(e) => handleInputChange(line.id, token.id, e)}
                                 onKeyDown={(e) => handleInputKeyDown(line.id, token.id, e)}
                                 disabled={token.isCorrect}
+                                maxLength={token.cleanWord.length}
                                 placeholder="?"
                                 style={{ width: `${Math.max(3, token.cleanWord.length) * 11 + 16}px` }}
                                 className={`mx-1 text-center bg-indigo-50 border-2 border-indigo-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-indigo-950 font-bold transition-all placeholder-indigo-300 py-0.5 text-xl lyric-gap-input ${
@@ -761,6 +791,63 @@ export const NowPlaying: React.FC<NowPlayingProps> = ({
           <span className="material-symbols-outlined text-2xl">exit_to_app</span>
         </button>
       </nav>
+
+      {/* Karaoke Settings Modal */}
+      {showSettingsModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl border border-outline-variant/30 animate-fadeIn text-[#1b1b24]">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-[#3525cd]">tune</span>
+                <h3 className="font-headline font-bold text-lg text-[#1b1b24]">Ajustes de Sincronización</h3>
+              </div>
+              <button
+                onClick={() => setShowSettingsModal(false)}
+                className="p-1 rounded-full text-[#777587] hover:bg-[#f5f2ff]"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+
+            <div className="space-y-6">
+              {/* Lyrics Sync Offset */}
+              <div>
+                <div className="flex justify-between text-xs font-semibold text-[#1b1b24] mb-2">
+                  <span>Ajustar tiempo de letra (Offset)</span>
+                  <span>{lyricOffset > 0 ? `+${lyricOffset}` : lyricOffset}s</span>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <button
+                    onClick={() => setLyricOffset((prev) => Math.round((prev - 0.5) * 10) / 10)}
+                    className="px-3 py-1.5 rounded-lg bg-[#f5f2ff] text-xs font-bold text-[#3525cd]"
+                  >
+                    -0.5s
+                  </button>
+                  <span className="text-xs font-semibold text-[#464555] flex-1 text-center">
+                    {lyricOffset === 0 ? 'Sin retraso' : `${lyricOffset > 0 ? '+' : ''}${lyricOffset}s`}
+                  </span>
+                  <button
+                    onClick={() => setLyricOffset((prev) => Math.round((prev + 0.5) * 10) / 10)}
+                    className="px-3 py-1.5 rounded-lg bg-[#f5f2ff] text-xs font-bold text-[#3525cd]"
+                  >
+                    +0.5s
+                  </button>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-2">
+                  Usa estos botones para adelantar o retrasar las letras si no coinciden con el sonido del video.
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowSettingsModal(false)}
+              className="w-full mt-6 py-3 bg-[#3525cd] text-white font-bold rounded-2xl shadow-md hover:bg-[#4f46e5] transition-all"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

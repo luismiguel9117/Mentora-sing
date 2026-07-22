@@ -95,6 +95,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab, onOpe
             <span className="material-symbols-outlined">person</span>
             <span className="text-sm font-medium">Profile</span>
           </button>
+
+          {/* Configuración */}
+          <button
+            onClick={() => window.location.href = '/config'}
+            className="w-full flex items-center gap-4 px-4 py-3 rounded-2xl transition-all duration-200 text-[#464555] hover:bg-[#eae6f4]"
+          >
+            <span className="material-symbols-outlined">settings</span>
+            <span className="text-sm font-medium">Configuración</span>
+          </button>
         </nav>
 
         {/* Upgrade Pro Card */}

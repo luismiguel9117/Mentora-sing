@@ -268,7 +268,7 @@ export default function ConfigView() {
             onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(139, 92, 246, 0.4)'}
             onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.5)'}
           >
-            ← Volver a Cine Reactor
+            ← Volver a Mentora Sing
           </button>
 
           <div style={{ position: 'relative', zIndex: 10, animation: 'fadeIn 0.6s ease-out' }}>
@@ -279,7 +279,7 @@ export default function ConfigView() {
         <>
           <div className="config-header">
             <button className="back-to-app-btn" onClick={() => navigate('/')}>
-              ← Volver a Cine Reactor
+              ← Volver a Mentora Sing
             </button>
           </div>
         <div className="admin-workspace-grid">

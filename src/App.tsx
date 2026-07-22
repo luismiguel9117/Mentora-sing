@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavTab, Song, PracticeMode, WordAnnotation, UserStats } from './types';
 import { SONGS_DATA, INITIAL_USER_STATS, BADGES_DATA } from './data/songs';
 import { Sidebar } from './components/Sidebar';
@@ -12,6 +12,7 @@ import { ProfileView } from './components/ProfileView';
 import { WordDetailsModal } from './components/WordDetailsModal';
 import { ProModal } from './components/ProModal';
 import { AICoachModal } from './components/AICoachModal';
+import { getCatalog } from './utils/supabase';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<NavTab>('home');
@@ -20,6 +21,22 @@ export default function App() {
   const [userStats, setUserStats] = useState<UserStats>(INITIAL_USER_STATS);
   const [selectedGenreFilter, setSelectedGenreFilter] = useState<string>('All');
   const [practiceHubMode, setPracticeHubMode] = useState<PracticeMode>('listening');
+
+  // Load song catalog from Supabase on mount
+  useEffect(() => {
+    async function loadCatalog() {
+      try {
+        const dbCatalog = await getCatalog();
+        if (dbCatalog && dbCatalog.length > 0) {
+          setSongsList(dbCatalog);
+          setActiveSong(dbCatalog[0]);
+        }
+      } catch (err) {
+        console.error("Failed to load catalog in App.tsx:", err);
+      }
+    }
+    loadCatalog();
+  }, []);
 
   // Modals state
   const [selectedWord, setSelectedWord] = useState<WordAnnotation | null>(null);

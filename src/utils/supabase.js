@@ -8,89 +8,109 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 // Fallback presets if DB is not seeded yet or offline
 const defaultVideoCatalog = [
   {
-    id: 'UF8uR6Z6KLc',
-    type: 'youtube',
-    title: 'Discurso de Steve Jobs en Stanford',
-    url: 'UF8uR6Z6KLc',
-    category: 'Discursos / Educación',
-    emoji: '🎓',
-    thumbnail: '/assets/covers/jobs_stanford.jpg'
+    id: 'flowers-miley-cyrus',
+    title: 'Flowers',
+    artist: 'Miley Cyrus',
+    level: 'B1 Intermediate',
+    genre: 'Pop Hits',
+    durationSeconds: 200,
+    practicedCount: '12.4k',
+    videoImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDh1nuQTuZQl5aPnFNJQWyzOnVEdSkc6UMpxKocs27VxFQX4ULsL4HvqGbCTs0n4u1-yKqj_9s5uh8QNolT36DQy890sqNLfPimtyln0sqncCv9h5aWFT2yrqqTU6lldGC_pZj0y4eV-46IMeprO1Iq2Erq0vDD28acNJmjsVE3UVQgYijwNoL8mH9SPvMv_MuFEAFPULN0uk6jVPZYUBg_fNEPExDRi0IWcQx3aQkIMJ-fHc6wsoB_BVsNnmqF2cBV8hax_A5FDyk',
+    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJcDGHqHd9CI7YbeGhTwfVcrocUlTt1Ib95HEm7VuH9yVLJ_Kd5xnfbfRsCsblzcBzUVAxmwTqOQvsTWyYydDnm4GduJwjMfpUaE3QoJJY5F7BTIu4dU8XhRuZD3kY01-8ooY7ODKRIc55hAAn_jbEpCQ56BFklsfWW5qXVqOtdX8kU2dlGB8Jo6CbIznFvBVXwRheTr72DthOLuLHSiuBcrntTSNG9Um0xhRNa3RkzeO-xV_cXZMpmpHtIkhmHN0-rzbMtiKKG-A',
+    lyrics: []
   },
   {
-    id: 'Kat5Kbt092g',
-    type: 'youtube',
-    title: 'Inside Out 2 (Intensa-Mente 2) - Tráiler',
-    url: 'Kat5Kbt092g',
-    category: 'Animación / Comedia',
-    emoji: '🎬',
-    thumbnail: '/assets/covers/inside_out.jpg'
+    id: 'stay-with-me-sam-smith',
+    title: 'Stay With Me',
+    artist: 'Sam Smith',
+    level: 'A2 Elementary',
+    genre: 'Pop Hits',
+    durationSeconds: 172,
+    practicedCount: '1.2k',
+    videoImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBQqfcNf-5VYtwUKjoUjzBIPRx3CTZqCiyNxqhSLaEhJcFKmmF19eHEVqRqr2Helxyt64IL-_4vX_EuNOoryQPl2zFvWsmxG08F0FVif29dePqLfu4fmjQJ0vtP2-np4NUn-wkgF11hEyjoIjdWdgZ_fjg2oz-zbCGh2Bncps26nBYOEmCK6SKi-cF1g3iysM0w54Gp2GI_GmBBKqg81fE_czb17mr1TgU6vusZ_NplmdcypFcaGX6P6pE74NDqfwWicl79XkgFIaw',
+    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBQqfcNf-5VYtwUKjoUjzBIPRx3CTZqCiyNxqhSLaEhJcFKmmF19eHEVqRqr2Helxyt64IL-_4vX_EuNOoryQPl2zFvWsmxG08F0FVif29dePqLfu4fmjQJ0vtP2-np4NUn-wkgF11hEyjoIjdWdgZ_fjg2oz-zbCGh2Bncps26nBYOEmCK6SKi-cF1g3iysM0w54Gp2GI_GmBBKqg81fE_czb17mr1TgU6vusZ_NplmdcypFcaGX6P6pE74NDqfwWicl79XkgFIaw',
+    lyrics: []
   },
   {
-    id: 'pL24Rby_53A',
-    type: 'youtube',
-    title: 'La Casa de Papel - Tráiler Bilingüe',
-    url: 'pL24Rby_53A',
-    category: 'Series / Drama',
-    emoji: '🇪🇸',
-    thumbnail: '/assets/covers/lcdp.jpg'
+    id: 'levitating-dua-lipa',
+    title: 'Levitating',
+    artist: 'Dua Lipa',
+    level: 'C1 Advanced',
+    genre: 'Pop Hits',
+    durationSeconds: 203,
+    practicedCount: '840',
+    videoImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBFCKA7MriMCQUBEQ3S9pcPSWjs4qYdySBJRtPLoSHgzxpu-IwpKDCJBGhHsM1oPMYgbJSzEcHF4DFtFVhV1QfhyXkbQ7SzDWruVwLTvPEpIIy0s_pfryB2elXv7drwJJQw1THw9hwsJ_zQihK2hHhZlEVlJIj2YsoD-jHJjlaJNXgYhjWOONpO5mUjr_7C8TiZU3cG1pfojNYzWgG6zfh9jhDpjLiwz-4hDVn22FSfXCr5Wnd9gumzRbkQKW0z7c3kxqxJ6Lu7E8Q',
+    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBFCKA7MriMCQUBEQ3S9pcPSWjs4qYdySBJRtPLoSHgzxpu-IwpKDCJBGhHsM1oPMYgbJSzEcHF4DFtFVhV1QfhyXkbQ7SzDWruVwLTvPEpIIy0s_pfryB2elXv7drwJJQw1THw9hwsJ_zQihK2hHhZlEVlJIj2YsoD-jHJjlaJNXgYhjWOONpO5mUjr_7C8TiZU3cG1pfojNYzWgG6zfh9jhDpjLiwz-4hDVn22FSfXCr5Wnd9gumzRbkQKW0z7c3kxqxJ6Lu7E8Q',
+    lyrics: []
   },
   {
-    id: 'local',
-    type: 'local',
-    title: 'Sintel - Cortometraje de Fantasía',
-    url: 'https://media.w3.org/2010/05/sintel/trailer_hd.mp4',
-    category: 'Fantasía / Animación',
-    emoji: '🐲',
-    thumbnail: '/assets/covers/sintel.jpg'
+    id: 'shape-of-you-ed-sheeran',
+    title: 'Shape of You',
+    artist: 'Ed Sheeran',
+    level: 'B2 Upper Int',
+    genre: 'Pop Hits',
+    durationSeconds: 233,
+    practicedCount: '2.5k',
+    videoImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB0VZv_PIjSV6I4qABOYLXZkGTOAwJV04E6iGbFXzcDeti4F9GTu9Io83YhKPsBf42YBmOlHaPXPCqyZF_YCtpfPe22qjXQ-Dui-ArTqvd5x7OGroukYQNuAaoACb4ZOZ-YHGscuwa8Osfy_y_oL5AiZBUStxcerQ7GqL1AwGlJuXkYWib14Tncv4hPb2Zs1Ga-N4tjVCjpmWFlepJvJkPa2wsifJMndLTFGaQe5BrdJt4OcZLmQQd1Tw5SinXg-UsMd6tT7dEKujM',
+    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB0VZv_PIjSV6I4qABOYLXZkGTOAwJV04E6iGbFXzcDeti4F9GTu9Io83YhKPsBf42YBmOlHaPXPCqyZF_YCtpfPe22qjXQ-Dui-ArTqvd5x7OGroukYQNuAaoACb4ZOZ-YHGscuwa8Osfy_y_oL5AiZBUStxcerQ7GqL1AwGlJuXkYWib14Tncv4hPb2Zs1Ga-N4tjVCjpmWFlepJvJkPa2wsifJMndLTFGaQe5BrdJt4OcZLmQQd1Tw5SinXg-UsMd6tT7dEKujM',
+    lyrics: []
   },
   {
-    id: 'vP4iYif190w',
-    type: 'youtube',
-    title: 'Presentación del primer iPhone (2007) - Steve Jobs',
-    url: 'vP4iYif190w',
-    category: 'Tecnología / Historia',
-    emoji: '📱',
-    thumbnail: '/assets/covers/iphone_2007.jpg'
-  },
-  {
-    id: 'A03N43A0k6I',
-    type: 'youtube',
-    title: 'Harry Potter - Escena del Sombrero Seleccionador',
-    url: 'A03N43A0k6I',
-    category: 'Cine / Fantasía',
-    emoji: '🧙',
-    thumbnail: '/assets/covers/sorting_hat.jpg'
+    id: 'believer-imagine-dragons',
+    title: 'Believer',
+    artist: 'Imagine Dragons',
+    level: 'B1 Intermediate',
+    genre: 'Rock Anthems',
+    durationSeconds: 204,
+    practicedCount: '4.8k',
+    videoImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop',
+    coverImage: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop',
+    lyrics: []
   }
 ];
 
+function mapDbRecordToSong(item) {
+  return {
+    id: item.id,
+    title: item.title,
+    artist: item.artist || 'Artista Desconocido',
+    level: item.level || 'B1 Intermediate',
+    genre: item.genre || 'Pop Hits',
+    durationSeconds: item.duration || 180,
+    progressPercent: 0,
+    practicedCount: '1.2k',
+    videoImage: item.thumbnail || `https://img.youtube.com/vi/${item.url}/hqdefault.jpg`,
+    coverImage: item.cover_image || item.thumbnail || `https://img.youtube.com/vi/${item.url}/hqdefault.jpg`,
+    lyrics: [],
+    videoUrl: item.url
+  };
+}
+
 export async function getCatalog() {
   try {
-    // 1. Automatic database cleanup of old broken YouTube IDs (self-healing)
-    try {
-      const oldIdsToDelete = ['LEjhYkp8P5M', 'hLAWN2_Z418', 'vN4U5yKsh28', 'd3P-vTj-NFA'];
-      await supabase.from('video_catalog').delete().in('id', oldIdsToDelete);
-    } catch (cleanErr) {
-      console.warn("Database cleanup warning:", cleanErr.message);
-    }
-
-    // 2. Sync/Upsert new active default videos to database so they are always fresh
+    // 1. Sync/Upsert default Mentora Sing songs to database on start
     try {
       await supabase
         .from('video_catalog')
         .upsert(defaultVideoCatalog.map(item => ({
           id: item.id,
           title: item.title,
-          url: item.url,
-          type: item.type,
-          category: item.category,
-          emoji: item.emoji,
-          thumbnail: item.thumbnail
+          url: item.id,
+          type: 'youtube',
+          category: 'Song',
+          emoji: '🎵',
+          thumbnail: item.videoImage,
+          artist: item.artist,
+          level: item.level,
+          genre: item.genre,
+          cover_image: item.coverImage,
+          duration: item.durationSeconds
         })));
     } catch (syncErr) {
       console.warn("Database sync warning:", syncErr.message);
     }
 
-    // 3. Fetch final catalog from database
+    // 2. Fetch catalog from database
     const { data, error } = await supabase
       .from('video_catalog')
       .select('*')
@@ -99,7 +119,7 @@ export async function getCatalog() {
     if (error) throw error;
 
     if (data && data.length > 0) {
-      return data;
+      return data.map(mapDbRecordToSong);
     }
     return defaultVideoCatalog;
   } catch (err) {
@@ -108,37 +128,22 @@ export async function getCatalog() {
   }
 }
 
-async function seedCatalog() {
-  try {
-    const { error } = await supabase
-      .from('video_catalog')
-      .insert(defaultVideoCatalog.map(item => ({
-        id: item.id,
-        title: item.title,
-        url: item.url,
-        type: item.type,
-        category: item.category,
-        emoji: item.emoji,
-        thumbnail: item.thumbnail
-      })));
-    if (error) throw error;
-    console.log("Successfully seeded default catalog into Supabase.");
-  } catch (err) {
-    console.error("Seeding catalog failed:", err.message);
-  }
-}
-
-export async function saveVideoToCatalog(video) {
+export async function saveVideoToCatalog(song) {
   const { data, error } = await supabase
     .from('video_catalog')
     .upsert({
-      id: video.id,
-      title: video.title,
-      url: video.url,
-      type: video.type,
-      category: video.category,
-      emoji: video.emoji,
-      thumbnail: video.thumbnail || ''
+      id: song.id,
+      title: song.title,
+      url: song.id,
+      type: 'youtube',
+      category: 'Song',
+      emoji: '🎵',
+      thumbnail: song.videoImage,
+      artist: song.artist,
+      level: song.level,
+      genre: song.genre,
+      cover_image: song.coverImage,
+      duration: song.durationSeconds
     });
 
   if (error) throw error;

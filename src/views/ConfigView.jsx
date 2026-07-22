@@ -12,13 +12,15 @@ export default function ConfigView() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Form states for adding new video
+  // Form states for adding a new song
   const [newTitle, setNewTitle] = useState('');
+  const [newArtist, setNewArtist] = useState('');
+  const [newLevel, setNewLevel] = useState('B1 Intermediate');
+  const [newGenre, setNewGenre] = useState('Pop Hits');
   const [newUrl, setNewUrl] = useState('');
-  const [newType, setNewType] = useState('youtube');
-  const [newCategory, setNewCategory] = useState('');
-  const [newEmoji, setNewEmoji] = useState('🎬');
-  const [newThumbnail, setNewThumbnail] = useState('');
+  const [newCoverImage, setNewCoverImage] = useState('');
+  const [newDuration, setNewDuration] = useState(180);
+
   const [editingThumbnailVideoId, setEditingThumbnailVideoId] = useState(null);
   const [tempThumbnailUrl, setTempThumbnailUrl] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -109,46 +111,42 @@ export default function ConfigView() {
     return url;
   };
 
-  const handleAddVideo = async (e) => {
+  const handleAddSong = async (e) => {
     e.preventDefault();
-    if (!newTitle || !newUrl) {
-      alert('Por favor completa el título y la URL/ID del video.');
+    if (!newTitle || !newUrl || !newArtist) {
+      alert('Por favor completa el título, el artista y la URL/ID del video de YouTube.');
       return;
     }
 
-    let finalId = '';
-    let finalUrl = newUrl.trim();
-
-    if (newType === 'youtube') {
-      // Extract ID if it is a full URL, or keep if it's already an ID
-      finalId = extractYoutubeId(finalUrl);
-      finalUrl = finalId;
-    } else {
-      // Generate a unique ID for local video from the title
-      finalId = 'local_' + Date.now();
+    const finalId = extractYoutubeId(newUrl.trim());
+    if (finalId.length !== 11) {
+      alert('Por favor introduce un enlace o ID de YouTube de 11 caracteres válido.');
+      return;
     }
 
     // Check if ID already exists
     if (catalog.some(v => v.id === finalId)) {
-      alert('Ya existe un video con este ID en el catálogo.');
+      alert('Ya existe una canción con este ID de video en el catálogo.');
       return;
     }
 
-    const newVideo = {
+    const defaultImage = `https://img.youtube.com/vi/${finalId}/hqdefault.jpg`;
+    const coverImage = newCoverImage.trim() || defaultImage;
+
+    const newSong = {
       id: finalId,
       title: newTitle.trim(),
-      url: finalUrl,
-      type: newType,
-      category: newCategory.trim() || 'General',
-      emoji: newEmoji.trim() || '🎬',
-      thumbnail: newThumbnail.trim()
+      artist: newArtist.trim(),
+      level: newLevel,
+      genre: newGenre,
+      durationSeconds: Number(newDuration) || 180,
+      videoImage: defaultImage,
+      coverImage
     };
-
-    const updatedCatalog = [...catalog, newVideo];
 
     try {
       // 1. Save video to Supabase Catalog
-      await saveVideoToCatalog(newVideo);
+      await saveVideoToCatalog(newSong);
 
       // 2. Initialize empty subtitle template for this video ID to prevent 404s
       await saveSubtitles(finalId, [
@@ -156,64 +154,54 @@ export default function ConfigView() {
           id: 1,
           start: 1.0,
           end: 4.0,
-          en: 'Welcome to your new video. Click to edit this subtitle.',
-          es: 'Bienvenido a tu nuevo video. Haz clic para editar este subtítulo.'
+          en: 'Welcome to your new karaoke track. Click to edit this subtitle.',
+          es: 'Bienvenido a tu nueva pista de karaoke. Haz clic para editar este subtítulo.'
         }
       ]);
 
-      setCatalog(updatedCatalog);
+      setCatalog(prev => [...prev, newSong]);
       
       // Reset form
       setNewTitle('');
+      setNewArtist('');
       setNewUrl('');
-      setNewCategory('');
-      setNewEmoji('🎬');
-      setNewThumbnail('');
-      alert('Video agregado exitosamente al catálogo en Supabase.');
+      setNewCoverImage('');
+      setNewDuration(180);
+      alert('Canción agregada exitosamente al catálogo en Supabase.');
     } catch (err) {
       console.error(err);
-      alert('Error al agregar el video: ' + err.message);
+      alert('Error al agregar la canción: ' + err.message);
     }
   };
 
-  const handleRemoveVideo = async (videoId) => {
-    if (!window.confirm('¿Seguro que deseas quitar este video de la web general? Los subtítulos cargados no se borrarán del disco duro pero ya no aparecerán en la lista.')) {
+  const handleRemoveSong = async (songId) => {
+    if (!window.confirm('¿Seguro que deseas quitar esta canción del catálogo? Las letras guardadas en la base de datos no se borrarán pero ya no aparecerá en el dashboard.')) {
       return;
     }
 
-    const updatedCatalog = catalog.filter(v => v.id !== videoId);
-
     try {
       // Remove video from Supabase Catalog
-      await deleteVideoFromCatalog(videoId);
-
-      setCatalog(updatedCatalog);
-      alert('Video removido del catálogo de Supabase exitosamente.');
+      await deleteVideoFromCatalog(songId);
+      setCatalog(prev => prev.filter(v => v.id !== songId));
+      alert('Canción removida del catálogo de Supabase exitosamente.');
     } catch (err) {
       console.error(err);
-      alert('Error al remover el video: ' + err.message);
+      alert('Error al remover la canción: ' + err.message);
     }
   };
 
-  const handleSaveThumbnail = async (videoId) => {
-    const updatedCatalog = catalog.map(v => {
-      if (v.id === videoId) {
-        return { ...v, thumbnail: tempThumbnailUrl.trim() };
-      }
-      return v;
-    });
+  const handleSaveThumbnail = async (songId) => {
+    const targetSong = catalog.find(v => v.id === songId);
+    if (!targetSong) return;
+
+    const updatedSong = { ...targetSong, coverImage: tempThumbnailUrl.trim() };
 
     try {
-      const targetVideo = updatedCatalog.find(v => v.id === videoId);
-      if (targetVideo) {
-        // Save the updated video to Supabase Catalog (includes the new thumbnail)
-        await saveVideoToCatalog(targetVideo);
-      }
-
-      setCatalog(updatedCatalog);
+      await saveVideoToCatalog(updatedSong);
+      setCatalog(prev => prev.map(v => v.id === songId ? updatedSong : v));
       setEditingThumbnailVideoId(null);
       setTempThumbnailUrl('');
-      alert('Portada actualizada exitosamente en Supabase.');
+      alert('Portada de la canción actualizada exitosamente en Supabase.');
     } catch (err) {
       console.error(err);
       alert('Error al guardar la portada: ' + err.message);
@@ -234,7 +222,7 @@ export default function ConfigView() {
   }
 
   return (
-    <div className="config-container">
+    <div className="config-container text-slate-800">
       {!auth ? (
         <div style={{
           position: 'fixed',
@@ -285,22 +273,27 @@ export default function ConfigView() {
         <div className="admin-workspace-grid">
           {/* Left: Content manager list */}
           <div className="video-management-card">
-            <h2>Gestión de Contenidos y Subtítulos</h2>
-            <p className="config-subtitle">Administra los videos que se muestran en el catálogo y edita sus tiempos y traducciones.</p>
+            <h2>Gestión de Canciones y Letras</h2>
+            <p className="config-subtitle">Administra los temas musicales de Mentora Sing y edita su sincronización de subtítulos.</p>
             
             <div className="video-list-container">
               {catalog.length === 0 ? (
-                <p className="empty-catalog-text">No hay videos en el catálogo. Agrega uno a la derecha.</p>
+                <p className="empty-catalog-text">No hay canciones en el catálogo. Agrega una a la derecha.</p>
               ) : (
                 catalog.map((v) => (
                   <div key={v.id} className="video-list-item" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                      <div className="video-item-emoji">{v.emoji}</div>
+                      <img 
+                        src={v.coverImage} 
+                        alt={v.title} 
+                        style={{ width: '48px', height: '48px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }} 
+                      />
                       <div className="video-item-details" style={{ flex: 1 }}>
-                        <h3>{v.title}</h3>
-                        <div className="video-item-submeta">
-                          <span className="video-item-cat">{v.category}</span>
-                          <span className={`video-item-badge ${v.type}`}>{v.type.toUpperCase()}</span>
+                        <h3 className="font-bold text-sm text-slate-800" style={{ margin: 0 }}>{v.title}</h3>
+                        <p className="text-xs text-slate-500 font-medium" style={{ margin: '2px 0 4px 0' }}>{v.artist}</p>
+                        <div className="video-item-submeta" style={{ display: 'flex', gap: '6px', fontSize: '9px' }}>
+                          <span style={{ backgroundColor: '#f0fdf4', color: '#166534', padding: '2px 6px', borderRadius: '9999px', fontWeight: 700 }}>{v.level}</span>
+                          <span style={{ backgroundColor: '#f1f5f9', color: '#475569', padding: '2px 6px', borderRadius: '9999px', fontWeight: 700 }}>{v.genre}</span>
                         </div>
                       </div>
                       <div className="video-item-actions">
@@ -308,12 +301,12 @@ export default function ConfigView() {
                           className="btn-3d edit-btn"
                           onClick={() => goToEditor(v.id)}
                         >
-                          ✏️ Subtítulos
+                          ✏️ Letra
                         </button>
                         <button
                           className="remove-btn"
-                          onClick={() => handleRemoveVideo(v.id)}
-                          title="Quitar video del catálogo"
+                          onClick={() => handleRemoveSong(v.id)}
+                          title="Quitar canción"
                         >
                           🗑️
                         </button>
@@ -322,21 +315,21 @@ export default function ConfigView() {
 
                     {/* Inline Cover Image editor */}
                     {editingThumbnailVideoId === v.id ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', width: '100%', backgroundColor: '#111827', padding: '10px', borderRadius: '10px', border: '1px solid #374151', margin: '6px 0' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#9ca3af' }}>Editar Portada de Video</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', backgroundColor: '#f8fafc', padding: '10px', borderRadius: '10px', border: '1px solid #e2e8f0', margin: '6px 0' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>Editar Portada de la Canción</span>
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                           <input 
                             type="text" 
-                            placeholder="URL de la imagen de portada (.jpg, .png, etc.)"
+                            placeholder="URL de la portada (.jpg, .png)"
                             value={tempThumbnailUrl}
                             onChange={(e) => setTempThumbnailUrl(e.target.value)}
-                            style={{ flex: 1, padding: '6px 10px', fontSize: '0.8rem', borderRadius: '6px', border: '1px solid #4b5563', backgroundColor: '#1f2937', color: '#fff' }}
+                            style={{ flex: 1, padding: '6px 10px', fontSize: '0.8rem', borderRadius: '6px', border: '1px solid #cbd5e1', backgroundColor: '#fff', color: '#000' }}
                           />
                           {tempThumbnailUrl && (
                             <button 
                               type="button" 
                               onClick={() => setTempThumbnailUrl('')}
-                              style={{ padding: '6px 10px', fontSize: '0.75rem', border: '1px solid #4b5563', borderRadius: '6px', background: '#374151', color: '#d1d5db', cursor: 'pointer' }}
+                              style={{ padding: '6px 10px', fontSize: '0.75rem', border: '1px solid #cbd5e1', borderRadius: '6px', background: '#f1f5f9', color: '#475569', cursor: 'pointer' }}
                             >
                               Limpiar
                             </button>
@@ -344,11 +337,11 @@ export default function ConfigView() {
                         </div>
                         
                         <div style={{
-                          border: '1.5px dashed #4b5563',
+                          border: '1.5px dashed #cbd5e1',
                           borderRadius: '8px',
                           padding: '8px',
                           textAlign: 'center',
-                          backgroundColor: '#1f2937',
+                          backgroundColor: '#fff',
                           cursor: 'pointer',
                           position: 'relative'
                         }}>
@@ -366,8 +359,8 @@ export default function ConfigView() {
                             }}
                             disabled={uploading}
                           />
-                          <span style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 700 }}>
-                            {uploading ? '⏳ Subiendo imagen...' : '📂 Subir nueva imagen desde PC'}
+                          <span style={{ fontSize: '0.75rem', color: '#4f46e5', fontWeight: 700 }}>
+                            {uploading ? '⏳ Subiendo imagen...' : '📂 Subir nueva portada desde PC'}
                           </span>
                         </div>
 
@@ -394,27 +387,17 @@ export default function ConfigView() {
                         </div>
                       </div>
                     ) : (
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', paddingLeft: '3.2rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.75rem', paddingLeft: '4rem' }}>
                         <button
                           type="button"
                           onClick={() => {
                             setEditingThumbnailVideoId(v.id);
-                            setTempThumbnailUrl(v.thumbnail || '');
+                            setTempThumbnailUrl(v.coverImage || '');
                           }}
-                          style={{ background: 'none', border: 'none', color: '#38bdf8', cursor: 'pointer', padding: 0, textDecoration: 'underline', fontWeight: 600 }}
+                          style={{ background: 'none', border: 'none', color: '#4f46e5', cursor: 'pointer', padding: 0, textDecoration: 'underline', fontWeight: 600 }}
                         >
-                          {v.thumbnail ? '🖼️ Cambiar Portada' : '🖼️ Agregar Portada/Miniatura'}
+                          {v.coverImage ? '🖼️ Cambiar Portada' : '🖼️ Agregar Portada/Miniatura'}
                         </button>
-                        {v.thumbnail && (
-                          <a 
-                            href={v.thumbnail} 
-                            target="_blank" 
-                            rel="noreferrer" 
-                            style={{ color: '#94a3b8', textDecoration: 'none', fontSize: '0.7rem' }}
-                          >
-                            (Ver Portada ↗️)
-                          </a>
-                        )}
                       </div>
                     )}
                   </div>
@@ -423,48 +406,62 @@ export default function ConfigView() {
             </div>
           </div>
 
-          {/* Right: Add new video form */}
+          {/* Right: Add new song form */}
           <div className="add-video-card">
-            <h2>Agregar Nuevo Video</h2>
-            <p className="config-subtitle">Introduce los detalles del video (YouTube o archivo directo) para añadirlo al catálogo.</p>
+            <h2>Agregar Nueva Canción</h2>
+            <p className="config-subtitle">Introduce los detalles del video musical de YouTube para añadirlo al juego de Karaoke.</p>
             
-            <form onSubmit={handleAddVideo} className="add-video-form">
+            <form onSubmit={handleAddSong} className="add-video-form">
               <div className="form-group">
-                <label>Título del Video</label>
+                <label>Título de la Canción</label>
                 <input
                   type="text"
-                  placeholder="Ej: Tráiler Oficial de Gladiador 2"
+                  placeholder="Ej: Flowers"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
                   required
                 />
               </div>
 
+              <div className="form-group">
+                <label>Nombre del Artista</label>
+                <input
+                  type="text"
+                  placeholder="Ej: Miley Cyrus"
+                  value={newArtist}
+                  onChange={(e) => setNewArtist(e.target.value)}
+                  required
+                />
+              </div>
+
               <div className="form-row">
                 <div className="form-group flex-1">
-                  <label>Tipo de Video</label>
-                  <select value={newType} onChange={(e) => setNewType(e.target.value)}>
-                    <option value="youtube">YouTube</option>
-                    <option value="local">Archivo Local (MP4/WebM URL)</option>
+                  <label>Nivel de Dificultad (CEFR)</label>
+                  <select value={newLevel} onChange={(e) => setNewLevel(e.target.value)}>
+                    <option value="A1 Beginner">A1 Beginner</option>
+                    <option value="A2 Elementary">A2 Elementary</option>
+                    <option value="B1 Intermediate">B1 Intermediate</option>
+                    <option value="B2 Upper Int">B2 Upper Int</option>
+                    <option value="C1 Advanced">C1 Advanced</option>
                   </select>
                 </div>
 
                 <div className="form-group flex-1">
-                  <label>Emoji del Ícono</label>
+                  <label>Género Musical</label>
                   <input
                     type="text"
-                    placeholder="Ej: 🍿, 🎬, 🚀"
-                    value={newEmoji}
-                    onChange={(e) => setNewEmoji(e.target.value)}
+                    placeholder="Ej: Pop Hits, Rock, R&B"
+                    value={newGenre}
+                    onChange={(e) => setNewGenre(e.target.value)}
                   />
                 </div>
               </div>
 
               <div className="form-group">
-                <label>{newType === 'youtube' ? 'URL o ID del Video de YouTube' : 'Enlace Directo del Archivo de Video'}</label>
+                <label>Enlace o ID del Video de YouTube</label>
                 <input
                   type="text"
-                  placeholder={newType === 'youtube' ? 'https://www.youtube.com/watch?v=...' : 'https://ejemplo.com/video.mp4'}
+                  placeholder="Ej: https://www.youtube.com/watch?v=2Vv-BfVoq4g"
                   value={newUrl}
                   onChange={(e) => setNewUrl(e.target.value)}
                   required
@@ -472,19 +469,19 @@ export default function ConfigView() {
               </div>
 
                <div className="form-group">
-                 <label>Portada / Miniatura (Opcional)</label>
+                 <label>Portada del Álbum / Canción (Opcional)</label>
                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '6px' }}>
                    <input
                      type="text"
                      placeholder="URL de la imagen (o sube una abajo)"
-                     value={newThumbnail}
-                     onChange={(e) => setNewThumbnail(e.target.value)}
+                     value={newCoverImage}
+                     onChange={(e) => setNewCoverImage(e.target.value)}
                      style={{ flexGrow: 1 }}
                    />
-                   {newThumbnail && (
+                   {newCoverImage && (
                      <button 
                        type="button" 
-                       onClick={() => setNewThumbnail('')}
+                       onClick={() => setNewCoverImage('')}
                        style={{ padding: '6px 12px', border: '1px solid #cbd5e1', borderRadius: '8px', background: '#f1f5f9', cursor: 'pointer', fontSize: '0.8rem' }}
                      >
                        Limpiar
@@ -503,7 +500,7 @@ export default function ConfigView() {
                    <input
                      type="file"
                      accept="image/*"
-                     onChange={(e) => handleCoverUpload(e.target.files[0], (url) => setNewThumbnail(url))}
+                     onChange={(e) => handleCoverUpload(e.target.files[0], (url) => setNewCoverImage(url))}
                      style={{
                        position: 'absolute',
                        inset: 0,
@@ -515,23 +512,23 @@ export default function ConfigView() {
                      disabled={uploading}
                    />
                    <span style={{ fontSize: '0.8rem', color: '#4f46e5', fontWeight: 700 }}>
-                     {uploading ? '⏳ Subiendo imagen...' : '📂 Subir desde PC (Buscador de archivos)'}
+                     {uploading ? '⏳ Subiendo imagen...' : '📂 Subir portada desde PC'}
                    </span>
                  </div>
                </div>
 
               <div className="form-group">
-                <label>Categoría / Etiqueta</label>
+                <label>Duración del Video (segundos)</label>
                 <input
-                  type="text"
-                  placeholder="Ej: Acción / Aventura"
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
+                  type="number"
+                  placeholder="Ej: 180"
+                  value={newDuration}
+                  onChange={(e) => setNewDuration(Number(e.target.value))}
                 />
               </div>
 
               <button type="submit" className="btn-3d add-submit-btn">
-                ➕ Agregar al Catálogo
+                ➕ Agregar Canción al Catálogo
               </button>
             </form>
           </div>

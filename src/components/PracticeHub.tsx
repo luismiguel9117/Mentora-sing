@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Song, PracticeMode, WordAnnotation } from '../types';
 
 interface PracticeHubProps {
@@ -17,7 +17,21 @@ export const PracticeHub: React.FC<PracticeHubProps> = ({
   onSelectWord
 }) => {
   const [activeTab, setActiveTab] = useState<PracticeMode>(initialMode);
-  const [selectedSong, setSelectedSong] = useState<Song>(songs[0]);
+  
+  // Safe song initialization fallback
+  const fallbackSong: Song = songs[0] || {
+    id: 'flowers-miley-cyrus',
+    title: 'Flowers',
+    artist: 'Miley Cyrus',
+    level: 'B1 Intermediate',
+    genre: 'Pop Hits',
+    durationSeconds: 200,
+    videoImage: '',
+    coverImage: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCJcDGHqHd9CI7YbeGhTwfVcrocUlTt1Ib95HEm7VuH9yVLJ_Kd5xnfbfRsCsblzcBzUVAxmwTqOQvsTWyYydDnm4GduJwjMfpUaE3QoJJY5F7BTIu4dU8XhRuZD3kY01-8ooY7ODKRIc55hAAn_jbEpCQ56BFklsfWW5qXVqOtdX8kU2dlGB8Jo6CbIznFvBVXwRheTr72DthOLuLHSiuBcrntTSNG9Um0xhRNa3RkzeO-xV_cXZMpmpHtIkhmHN0-rzbMtiKKG-A',
+    lyrics: []
+  };
+
+  const [selectedSong, setSelectedSong] = useState<Song>(fallbackSong);
 
   // Listening Fill-in-the-blank game state
   const [blankAnswer, setBlankAnswer] = useState('');
